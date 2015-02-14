@@ -1,4 +1,10 @@
 ko.utils = (function () {
+    /**
+     * 对象遍历
+     * @param  {object} obj    要遍历的对象
+     * @param  {function} action 执行的操作
+     * @return
+     */
     function objectForEach(obj, action) {
         for (var prop in obj) {
             if (obj.hasOwnProperty(prop)) {
