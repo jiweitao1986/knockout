@@ -112,6 +112,7 @@ ko.utils = (function () {
 
     /**
      * toggleObjectClassPropertyString
+     * 
      */
     function toggleObjectClassPropertyString(obj, prop, classNames, shouldHaveClass) {
         // obj/prop is either a node/'className' or a SVGAnimatedString/'baseVal'.
