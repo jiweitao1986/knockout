@@ -13,6 +13,12 @@ ko.utils = (function () {
         }
     }
 
+    /**
+     * 对象合并
+     * @param  {object} target 目标对象
+     * @param  {object} source 源对象
+     * @return {object}        合并之后的对象
+     */
     function extend(target, source) {
         if (source) {
             for(var prop in source) {
@@ -24,6 +30,11 @@ ko.utils = (function () {
         return target;
     }
 
+    /**
+     * 将proto设置为obj的原型
+     * @param {object} obj   对象
+     * @param {object} proto 原型
+     */
     function setPrototypeOf(obj, proto) {
         obj.__proto__ = proto;
         return obj;
@@ -61,6 +72,12 @@ ko.utils = (function () {
     var isIe6 = ieVersion === 6,
         isIe7 = ieVersion === 7;
 
+    /**
+     * 判断click是否在checkbox或radio上
+     * @param  {HTMLElement}  element   元素
+     * @param  {String}       eventType 事件类型
+     * @return {Boolean}
+     */
     function isClickOnCheckableElement(element, eventType) {
         if ((ko.utils.tagNameLower(element) !== "input") || !element.type) return false;
         if (eventType.toLowerCase() != "click") return false;
@@ -72,6 +89,9 @@ ko.utils = (function () {
     // see: https://github.com/knockout/knockout/issues/1597
     var cssClassNameRegex = /\S+/g;
 
+    /**
+     * 切换DOM节点的calss
+     */
     function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
         var addOrRemoveFn;
         if (classNames) {
@@ -90,6 +110,9 @@ ko.utils = (function () {
         }
     }
 
+    /**
+     * toggleObjectClassPropertyString
+     */
     function toggleObjectClassPropertyString(obj, prop, classNames, shouldHaveClass) {
         // obj/prop is either a node/'className' or a SVGAnimatedString/'baseVal'.
         var currentClassNames = obj[prop].match(cssClassNameRegex) || [];
@@ -102,11 +125,22 @@ ko.utils = (function () {
     return {
         fieldsIncludedWithJsonPost: ['authenticity_token', /^__RequestVerificationToken(_.*)?$/],
 
+        /**
+         * 数组遍历
+         * @param  {Array}    array  数组
+         * @param  {Function} action 对数组中元素执行的方法，参数1=数组中的值 参数2=数组中的索引
+         */
         arrayForEach: function (array, action) {
             for (var i = 0, j = array.length; i < j; i++)
                 action(array[i], i);
         },
 
+        /**
+         * 获取item在array中的位置
+         * @param  {Array}  array 数组
+         * @param  {Object} item  数组元素
+         * @return {Int}          位置
+         */
         arrayIndexOf: function (array, item) {
             if (typeof Array.prototype.indexOf == "function")
                 return Array.prototype.indexOf.call(array, item);
@@ -116,6 +150,13 @@ ko.utils = (function () {
             return -1;
         },
 
+        /**
+         * 获取数组中满足条件的第一个元素
+         * @param  {Array}    array          数组
+         * @param  {Function} predicate      判断方法
+         * @param  {Object}   predicateOwner 判断方法所属对象，即this对象
+         * @return {Object}                  数组元素
+         */
         arrayFirst: function (array, predicate, predicateOwner) {
             for (var i = 0, j = array.length; i < j; i++)
                 if (predicate.call(predicateOwner, array[i], i))
@@ -123,6 +164,12 @@ ko.utils = (function () {
             return null;
         },
 
+        /**
+         * 删除一个元素
+         * @param  {[type]} array        [description]
+         * @param  {[type]} itemToRemove [description]
+         * @return {[type]}              [description]
+         */
         arrayRemoveItem: function (array, itemToRemove) {
             var index = ko.utils.arrayIndexOf(array, itemToRemove);
             if (index > 0) {
@@ -143,6 +190,12 @@ ko.utils = (function () {
             return result;
         },
 
+        /**
+         * 用mapping方法对数组中所有元素进行处理
+         * @param  {Array}    array   数组
+         * @param  {Function} mapping 处理方法
+         * @return {Array}            处理后的数组
+         */
         arrayMap: function (array, mapping) {
             array = array || [];
             var result = [];
@@ -151,6 +204,12 @@ ko.utils = (function () {
             return result;
         },
 
+        /**
+         * 数组过滤
+         * @param  {Array}    array     数组
+         * @param  {Function} predicate 过滤器
+         * @return {Array}              过滤后的新数组
+         */
         arrayFilter: function (array, predicate) {
             array = array || [];
             var result = [];
@@ -160,6 +219,12 @@ ko.utils = (function () {
             return result;
         },
 
+        /**
+         * 将valuesToPush追加到数组的尾部
+         * @param  {Array} array                        数组
+         * @param  {Array/ArrayLikeObject} valuesToPush 待追加的数组或类数组对象
+         * @return {Array}                              新数组
+         */
         arrayPushAll: function (array, valuesToPush) {
             if (valuesToPush instanceof Array)
                 array.push.apply(array, valuesToPush);
@@ -169,6 +234,12 @@ ko.utils = (function () {
             return array;
         },
 
+        /**
+         * 添加或移除数组中的元素
+         * @param {Array}   array    数组
+         * @param {Object}  value    数组元素
+         * @param {Boolean} included 添加还是移除
+         */
         addOrRemoveItem: function(array, value, included) {
             var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
             if (existingEntryIndex < 0) {
@@ -190,6 +261,12 @@ ko.utils = (function () {
 
         objectForEach: objectForEach,
 
+        /**
+         * 将mapping方法应用于source对象的所有属性
+         * @param  {Object} source  对象
+         * @param  {Function} mapping 方法
+         * @return {Object}
+         */
         objectMap: function(source, mapping) {
             if (!source)
                 return source;
@@ -202,12 +279,21 @@ ko.utils = (function () {
             return target;
         },
 
+        /**
+         * 清空所有子节点
+         * @param  {Node} domNode 父节点
+         */
         emptyDomNode: function (domNode) {
             while (domNode.firstChild) {
                 ko.removeNode(domNode.firstChild);
             }
         },
 
+        /**
+         * 将DOM节点放进div元素中，并返回div
+         * @param  {ArrayLikeObject} nodes 节点列表
+         * @return {HtmlElement}
+         */
         moveCleanedNodesToContainerElement: function(nodes) {
             // Ensure it's a real array, as we're about to reparent the nodes and
             // we don't want the underlying collection to change while we're doing that.
@@ -221,6 +307,12 @@ ko.utils = (function () {
             return container;
         },
 
+        /**
+         * 克隆一组DOM节点
+         * @param  {Array}   nodesArray       DOM节点数组
+         * @param  {Boolean} shouldCleanNodes 是否移除原节点
+         * @return {Array}                    新的节点数组
+         */
         cloneNodes: function (nodesArray, shouldCleanNodes) {
             for (var i = 0, j = nodesArray.length, newNodesArray = []; i < j; i++) {
                 var clonedNode = nodesArray[i].cloneNode(true);
@@ -229,6 +321,11 @@ ko.utils = (function () {
             return newNodesArray;
         },
 
+        /**
+         * 将childNodes设置为domNode的子节点
+         * @param {Node}  domNode    DOM节点
+         * @param {Array} childNodes 子节点列表
+         */
         setDomNodeChildren: function (domNode, childNodes) {
             ko.utils.emptyDomNode(domNode);
             if (childNodes) {
@@ -237,6 +334,11 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * 用newNodesArray替换nodeToReplaceOrNodeArray
+         * @param  {Array} nodeToReplaceOrNodeArray 被替换的node数组
+         * @param  {Array} newNodesArray            新插入的node数组
+         */
         replaceDomNodes: function (nodeToReplaceOrNodeArray, newNodesArray) {
             var nodesToReplaceArray = nodeToReplaceOrNodeArray.nodeType ? [nodeToReplaceOrNodeArray] : nodeToReplaceOrNodeArray;
             if (nodesToReplaceArray.length > 0) {
@@ -250,6 +352,9 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * fixUpContinuousNodeArray
+         */
         fixUpContinuousNodeArray: function(continuousNodeArray, parentNode) {
             // Before acting on a set of nodes that were previously outputted by a template function, we have to reconcile
             // them against what is in the DOM right now. It may be that some of the nodes have already been removed, or that
@@ -289,6 +394,11 @@ ko.utils = (function () {
             return continuousNodeArray;
         },
 
+        /**
+         * 设置Option元素的选中状态
+         * @param {HTMLOptionElement}  optionNode option元素
+         * @param {Boolean}            isSelected 选中状态
+         */
         setOptionNodeSelectionState: function (optionNode, isSelected) {
             // IE6 sometimes throws "unknown error" if you try to write to .selected directly, whereas Firefox struggles with setAttribute. Pick one based on browser.
             if (ieVersion < 7)
@@ -297,6 +407,11 @@ ko.utils = (function () {
                 optionNode.selected = isSelected;
         },
 
+        /**
+         * 移除字符串两侧的空白
+         * @param  {string} string 字符串
+         * @return {string}        移除空白后的字符串
+         */
         stringTrim: function (string) {
             return string === null || string === undefined ? '' :
                 string.trim ?
@@ -304,6 +419,12 @@ ko.utils = (function () {
                     string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
         },
 
+        /**
+         * 检测string是否以startsWith开头
+         * @param  {String} string      字符串
+         * @param  {String} startsWith  开头字符串
+         * @return {Boolean}
+         */
         stringStartsWith: function (string, startsWith) {
             string = string || "";
             if (startsWith.length > string.length)
@@ -311,6 +432,13 @@ ko.utils = (function () {
             return string.substring(0, startsWith.length) === startsWith;
         },
 
+        /**
+         * 检测node是否为containedByNode所包含
+         * 即node是否为containedByNode的子元素或本身
+         * @param  {Node} node            子节点
+         * @param  {Node} containedByNode 父节点
+         * @return {Boolean}
+         */
         domNodeIsContainedBy: function (node, containedByNode) {
             if (node === containedByNode)
                 return true;
@@ -326,14 +454,29 @@ ko.utils = (function () {
             return !!node;
         },
 
+        /**
+         * 检测node是否已经加入到DOM树中
+         * @param  {Node} node Node节点
+         * @return {Boolean}
+         */
         domNodeIsAttachedToDocument: function (node) {
             return ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement);
         },
 
+        /**
+         * 检测nodes中是否有节点被添加到DOM树中
+         * @param  {NodeList} nodes 节点列表
+         * @return {Boolean}
+         */
         anyDomNodeIsAttachedToDocument: function(nodes) {
             return !!ko.utils.arrayFirst(nodes, ko.utils.domNodeIsAttachedToDocument);
         },
 
+        /**
+         * 返回元素的标签名（小写）
+         * @param  {Element} element 元素
+         * @return {String}          标签名的小写
+         */
         tagNameLower: function(element) {
             // For HTML elements, tagName will always be upper case; for XHTML elements, it'll be lower case.
             // Possible future optimization: If we know it's an element from an XHTML document (not HTML),
@@ -341,6 +484,12 @@ ko.utils = (function () {
             return element && element.tagName && element.tagName.toLowerCase();
         },
 
+        /**
+         * 事件绑定
+         * @param {Element}  element   DOM元素
+         * @param {String}   eventType 事件类型
+         * @param {Function} handler   事件处理程序
+         */
         registerEventHandler: function (element, eventType, handler) {
             var mustUseAttachEvent = ieVersion && eventsThatMustBeRegisteredUsingAttachEvent[eventType];
             if (!mustUseAttachEvent && jQueryInstance) {
@@ -391,10 +540,20 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * 去除双向绑定包裹
+         * @param  {object} value
+         * @return {[object]}
+         */
         unwrapObservable: function (value) {
             return ko.isObservable(value) ? value() : value;
         },
 
+        /**
+         * 去除双向绑定
+         * @param  {object} value 已包裹的对象
+         * @return {object}       移除包裹之后的对象
+         */
         peekObservable: function (value) {
             return ko.isObservable(value) ? value.peek() : value;
         },
@@ -419,6 +578,11 @@ ko.utils = (function () {
             ko.utils.forceRefresh(element);
         },
 
+        /**
+         * 设置元素的name属性值
+         * @param {Element} element 元素
+         * @param {string}  name    元素name属性值
+         */
         setElementName: function(element, name) {
             element.name = name;
 
@@ -433,6 +597,11 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * 强制刷新（IE9bug）
+         * @param  {[type]} node [description]
+         * @return {[type]}      [description]
+         */
         forceRefresh: function(node) {
             // Workaround for an IE9 rendering bug - https://github.com/SteveSanderson/knockout/issues/209
             if (ieVersion >= 9) {
@@ -443,6 +612,10 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * 确保选择的元素被正确的渲染
+         * @param  {HtmlElement} selectElement 选中的html元素
+         */
         ensureSelectElementIsRenderedCorrectly: function(selectElement) {
             // Workaround for IE9 rendering bug - it doesn't reliably display all the text in dynamically-added select boxes unless you force it to re-render by updating the width.
             // (See https://github.com/SteveSanderson/knockout/issues/312, http://stackoverflow.com/questions/5908494/select-only-shows-first-char-of-selected-option)
@@ -454,6 +627,12 @@ ko.utils = (function () {
             }
         },
 
+        /**
+         * 建立指定范围的整数数组
+         * @param  {int}   min 最小值
+         * @param  {int}   max 最大值
+         * @return {array}     数组
+         */
         range: function (min, max) {
             min = ko.utils.unwrapObservable(min);
             max = ko.utils.unwrapObservable(max);
@@ -463,6 +642,11 @@ ko.utils = (function () {
             return result;
         },
 
+        /**
+         * 将类数组列表转换为真正的数组
+         * @param  {arrayLikeObject} arrayLikeObject 类数组对象
+         * @return {array}                           数组
+         */
         makeArray: function(arrayLikeObject) {
             var result = [];
             for (var i = 0, j = arrayLikeObject.length; i < j; i++) {
@@ -488,6 +672,11 @@ ko.utils = (function () {
             return matches;
         },
 
+        /**
+         * 解析JSON字符串
+         * @param  {string} jsonString JSON字符串
+         * @return {object}            JSON对象
+         */
         parseJson: function (jsonString) {
             if (typeof jsonString == "string") {
                 jsonString = ko.utils.stringTrim(jsonString);
@@ -500,12 +689,25 @@ ko.utils = (function () {
             return null;
         },
 
+        /**
+         * 序列化JSON对象
+         * @param  {object}   data     JSON对象
+         * @param  {replacer} replacer replacer
+         * @param  {space}    space    space
+         * @return {string}            JSON字符串
+         */
         stringifyJson: function (data, replacer, space) {   // replacer and space are optional
             if (!JSON || !JSON.stringify)
                 throw new Error("Cannot find JSON.stringify(). Some browsers (e.g., IE < 8) don't support it natively, but you can overcome this by adding a script reference to json2.js, downloadable from http://www.json.org/json2.js");
             return JSON.stringify(ko.utils.unwrapObservable(data), replacer, space);
         },
 
+        /**
+         * 提交JSON格式的数据
+         * @param  {string/object} urlOrForm url/form元素
+         * @param  {object}        data      要提交的JSON对象
+         * @param  {object}        options   选项
+         */
         postJson: function (urlOrForm, data, options) {
             options = options || {};
             var params = options['params'] || {};
