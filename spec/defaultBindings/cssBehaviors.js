@@ -49,6 +49,8 @@ describe('Binding: CSS classes', function() {
         expect(testNode.childNodes[0].className).toEqual("unrelatedClass1 another_Rule my-Rule");
         observable1(undefined);
         expect(testNode.childNodes[0].className).toEqual("unrelatedClass1");
+        observable1(" ");
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass1");
     });
 
     it('Should work with any arbitrary class names', function() {
@@ -99,5 +101,28 @@ describe('Binding: CSS classes', function() {
         expect(testNode.childNodes[0].className).toEqual("unrelatedClass1");
         observable1("my-Rule");
         expect(testNode.childNodes[0].className).toEqual("unrelatedClass1 my-Rule");
+    });
+
+    it('Should be able to combine "class" and "css" bindings with dynamic and static classes', function () {
+        // This test doesn't cover cases where the static and dynamic bindings try to set or unset the same class name
+        // because the behavior for that scenario isn't defined.
+
+        var booleanProp = new ko.observable(false);
+        var stringProp = new ko.observable("");
+        testNode.innerHTML = "<div class='unrelatedClass' data-bind='css: { staticClass: booleanProp }, class: stringProp'></div>";
+
+        ko.applyBindings({ booleanProp: booleanProp, stringProp: stringProp }, testNode);
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass");
+
+        booleanProp(true);
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass staticClass");
+
+        stringProp("dynamicClass");
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass staticClass dynamicClass");
+
+        booleanProp(false);
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass dynamicClass");
+        stringProp(null);
+        expect(testNode.childNodes[0].className).toEqual("unrelatedClass");
     });
 });
